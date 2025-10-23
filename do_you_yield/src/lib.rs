@@ -5,8 +5,12 @@ pub use do_you_yield_macro::gn;
 use core::{
     mem::MaybeUninit,
     pin::Pin,
-    task::{Context, Poll, RawWaker, RawWakerVTable, Waker},
+    task::{Context, RawWaker, RawWakerVTable, Waker},
 };
+
+mod yld;
+#[doc(hidden)]
+pub use yld::Yield;
 
 #[doc(hidden)]
 pub struct Gn<F: Future<Output = ()>, O> {
@@ -64,29 +68,4 @@ where
 
 impl<F: Future<Output = ()>, O> Generator for Gn<F, O> {
     type Item = O;
-}
-
-#[doc(hidden)]
-pub struct Yield<O>(Option<O>);
-
-impl<O> Yield<O> {
-    /// SAFETY: **never** use this function.
-    #[doc(hidden)]
-    pub unsafe fn ___make(o: O) -> Self {
-        Self(Some(o))
-    }
-}
-
-impl<O> Future for Yield<O> {
-    type Output = ();
-
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> core::task::Poll<Self::Output> {
-        if let Some(data) = unsafe { self.get_unchecked_mut().0.take() } {
-            let out = unsafe { &mut *cx.waker().data().cast::<MaybeUninit<O>>().cast_mut() };
-            out.write(data);
-            Poll::Pending
-        } else {
-            Poll::Ready(())
-        }
-    }
 }
