@@ -8,6 +8,13 @@ use core::{
     task::{Context, RawWaker, RawWakerVTable, Waker},
 };
 
+#[macro_export]
+macro_rules! gn_type {
+    ($t:ty) => {
+        $crate::Gn<impl ::core::future::Future<Output = ()>, $t>
+    };
+}
+
 mod yld;
 #[doc(hidden)]
 pub use yld::Yield;
