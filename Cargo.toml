@@ -1,6 +1,6 @@
-[package]
-name = "do_you_yield"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = [ "do_you_yield" ]
+resolver = "3"
 
-[dependencies]
+[workspace.package]
+edition = "2024"
