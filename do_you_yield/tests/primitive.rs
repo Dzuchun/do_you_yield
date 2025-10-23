@@ -34,7 +34,7 @@ fn generates_1_10() {
 fn captures_ref() {
     let mut i = 1;
     let gn = do_you_yield::gn!(gen {
-        while (i <= 10) {
+        while i <= 10 {
             yield i;
             i += 1;
         }
