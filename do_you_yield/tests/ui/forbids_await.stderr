@@ -1,0 +1,10 @@
+error:
+       Awaiting is not allowed inside of the main generator code. Please do one of the following:
+       - extract it into a function
+       - extract it into a closure
+       - move it out of the generator
+       - move into an async block
+ --> tests/ui/forbids_await.rs:6:13
+  |
+6 |             core::future::ready::<i32>(42).await;
+  |             ^^^^

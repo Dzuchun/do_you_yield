@@ -1,0 +1,9 @@
+error:
+       Macro invocations are not allowed inside of the main generator code. Please do one of the following:
+       - extract it into a function
+       - extract it into a closure
+       - move it out of the generator
+ --> tests/ui/forbids_macro.rs:7:24
+  |
+7 |             let _int = core::pin::pin!(int);
+  |                        ^^^^
