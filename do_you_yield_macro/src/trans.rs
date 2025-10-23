@@ -296,7 +296,7 @@ impl Trans for Expr {
                 let span = expr_yield.span();
                 let expr = &mut expr_yield.expr;
                 expr.trans(out, is_async);
-                *self = parse_quote_spanned! {span => unsafe { ::do_you_yield::Yield::<#out>::___make(#expr) }.await };
+                *self = parse_quote_spanned! {span => unsafe { ::do_you_yield::sync::Yield::<#out>::___make(#expr) }.await };
             }
             _ => todo!(),
         }

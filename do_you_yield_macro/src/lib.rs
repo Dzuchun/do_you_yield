@@ -55,7 +55,7 @@ impl Input {
         self.code.trans(&out, self.is_async);
         let code = self.code;
         parse_quote! {
-            ::do_you_yield::Gn::<_, #out> {
+            ::do_you_yield::sync::Gn::<_, #out> {
                 fut: async #mv #code,
                 out: ::core::mem::MaybeUninit::uninit(),
             }
