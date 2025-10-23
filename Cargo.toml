@@ -1,6 +1,12 @@
 [workspace]
-members = [ "do_you_yield" ]
+members = [
+    "do_you_yield",
+    "do_you_yield_macro",
+]
 resolver = "3"
 
 [workspace.package]
 edition = "2024"
+
+[workspace.dependencies]
+do_you_yield_macro = { path = "./do_you_yield_macro" }

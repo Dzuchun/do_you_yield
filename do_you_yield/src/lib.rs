@@ -1,5 +1,7 @@
 #![cfg_attr(not(test), no_std)]
 
+pub use do_you_yield_macro::gn;
+
 use core::{
     mem::MaybeUninit,
     pin::Pin,
@@ -87,52 +89,4 @@ impl<O> Future for Yield<O> {
             Poll::Ready(())
         }
     }
-}
-
-#[macro_export]
-macro_rules! gn {
-    (gen {$($code:tt)*} -> $out:ty) => {
-        $crate::Gn::<_, $out> {
-            fut: async {
-                $crate::gn!(@trans $out | $($code)*);
-            },
-            out: ::core::mem::MaybeUninit::uninit(),
-        }
-    };
-    (@trans $out:ty | $t:tt.await; $($rest:tt)*) => { ::core::compile_error!("Awaiting in the generator is not supported"); };
-    (@trans $out:ty |
-        for $i:ident in $it:tt {
-            $($code:tt)*
-        }
-        $($rest:tt)*
-    ) => {
-        #[allow(unused_parens)]
-        let iter = $crate::gn!(@trans $out | $it);
-        for $i in iter {
-            $crate::gn!(@trans $out | $($code)*);
-        }
-        $crate::gn!(@trans $out | $($rest)*);
-    };
-    (@trans $out:ty | let $i:ident; $($rest:tt)*) => {
-        let $i;
-        $crate::gn!(@trans $out | $($rest)*)
-    };
-    (@trans $out:ty | let $p:pat = $e:tt; $($rest:tt)*) => {
-        let $p = $crate::gn!(@trans $out | $e);
-        $crate::gn!(@trans $out | $($rest)*)
-    };
-    (@trans $out:ty | yield $y:tt; $($rest:tt)*) => {
-        unsafe { $crate::Yield::<$out>::___make($crate::gn!(@trans $out | $y)) }.await;
-        $crate::gn!(@trans $out | $($rest)*)
-    };
-    // nil rule
-    (@trans $out:ty |) => {};
-    // all other kind of expressions are passed unchanged
-    (@trans $out:ty | $e:expr) => { $e };
-    // item bypass (without tail drop)
-    (@trans $out:ty | $it:item $($rest:tt)*) => {
-        $it $crate::gn!(@trans $out | $($rest)*)
-    };
-    // bypass rule, just in case I forgor something
-    (@trans $out:ty | $($bp:tt)+) => {$($bp)+};
 }
