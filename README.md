@@ -131,7 +131,7 @@ Well, with the approach outlined above -- it's actually trivial! All we need a d
     - get the `Pin<&mut _>` to the future it wraps
     - obtain a `Waker` from the `state` pointed to by `data` pointer of the provided `Waker`
     - `poll` the wrapped future with the "real" waker
-- If the generator's future `poll` had returned `Poll::Pending`, it means that `Yield` was encountered along the way, and
+- If the generator's future `poll` had returned `Poll::Pending`, it means that some future was awaited along thee way:
     - If `Option<Output>` contains the value, then `Yield` must have put it there. That's the next item, so we return `Some(Poll::Ready(output))`
     - If `Option<Output>` does not contain a value, then `Await` was encountered. Next item is pending, so we return `Some(Poll::Pending)`
 - If `poll` returned `Poll::Ready(())`, generator must have reached it's end, and `None` is returned to the caller
