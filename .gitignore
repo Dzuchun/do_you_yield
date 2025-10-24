@@ -1,1 +1,5 @@
 /target
+
+# local act files
+.actrc
+act_event.json
