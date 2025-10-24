@@ -39,5 +39,5 @@ jobs:
       - name: cargo test
         run: cargo test-all-features
 
-      - name: cargo test on release
-        run: cargo test-all-features --release
+      # - name: cargo test on release
+      #   run: cargo test-all-features --release
