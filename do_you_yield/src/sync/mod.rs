@@ -21,14 +21,6 @@ pub struct Gn<F: Future<Output = ()>, O> {
     pub out: MaybeUninit<O>,
 }
 
-const VTABLE: RawWakerVTable = RawWakerVTable::new(clone, wake, wake_by_ref, drop);
-unsafe fn clone(data: *const ()) -> RawWaker {
-    RawWaker::new(data, &VTABLE)
-}
-unsafe fn wake(_: *const ()) {}
-unsafe fn wake_by_ref(_: *const ()) {}
-unsafe fn drop(_: *const ()) {}
-
 impl<F: Future<Output = ()>, O> Gn<F, O> {
     fn gn_next(mut self: Pin<&mut Self>) -> Option<O> {
         let fut;
@@ -38,7 +30,7 @@ impl<F: Future<Output = ()>, O> Gn<F, O> {
             fut = Pin::new_unchecked(&mut self_.fut);
             out = &mut self_.out;
         }
-        let waker = unsafe { Waker::new(core::ptr::from_mut(out).cast_const().cast(), &VTABLE) };
+        let waker = make((&raw mut state).cast_const().cast());
         let _ = out;
         match fut.poll(&mut Context::from_waker(&waker)) {
             core::task::Poll::Ready(()) => {
