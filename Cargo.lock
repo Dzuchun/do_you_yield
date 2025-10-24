@@ -21,26 +21,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
-name = "do_you_yield"
-version = "0.1.0"
-dependencies = [
- "do_you_yield_macro",
- "futures-core",
- "futures-util",
- "tokio",
- "trybuild",
-]
-
-[[package]]
-name = "do_you_yield_macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -522,3 +502,23 @@ name = "winnow"
 version = "0.7.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "21a0236b59786fed61e2a80582dd500fe61f18b5dca67a4a067d0bc9039339cf"
+
+[[package]]
+name = "yaag"
+version = "0.1.0"
+dependencies = [
+ "futures-core",
+ "futures-util",
+ "tokio",
+ "trybuild",
+ "yaag_proc_macro",
+]
+
+[[package]]
+name = "yaag_proc_macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
