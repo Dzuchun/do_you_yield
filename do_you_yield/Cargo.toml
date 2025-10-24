@@ -8,3 +8,8 @@ trybuild = "1.0"
 
 [dependencies]
 do_you_yield_macro.workspace = true
+futures-core = { version = "0.3.31", optional = true }
+
+[features]
+default = [ "async" ]
+async = [ "futures-core" ]

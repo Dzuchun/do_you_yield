@@ -1,5 +1,6 @@
 use syn::{
-    Arm, Block, Expr, FieldValue, Item, Local, Stmt, Type, parse_quote_spanned, spanned::Spanned,
+    Arm, Block, Expr, FieldValue, Ident, Item, Local, Stmt, Type, parse_quote, parse_quote_spanned,
+    spanned::Spanned,
 };
 
 const MACRO_ERROR: &str = r"
@@ -9,11 +10,7 @@ Macro invocations are not allowed inside of the main generator code. Please do o
 - move it out of the generator
 ";
 const AWAIT_ERROR: &str = "
-Awaiting is not allowed inside of the main generator code. Please do one of the following:
-- extract it into a function
-- extract it into a closure
-- move it out of the generator
-- move into an async block
+Await outside of async context.
 ";
 const ATTR_ERROR: &str = "
 Attributes are FORBIDDEN inside of the generator code, as they can expand into unintended code.
@@ -124,10 +121,6 @@ impl Trans for Expr {
             // async blocks are OK, but still no attrs allowed
             Expr::Async(expr_async) => {
                 assert_no_attr!(expr_async, self);
-            }
-            Expr::Await(expr_await) => {
-                assert_no_attr!(expr_await, self);
-                *self = parse_quote_spanned! { expr_await.span() => ::core::compile_error!(#AWAIT_ERROR) }
             }
             Expr::Binary(expr_binary) => {
                 assert_no_attr!(expr_binary, self);
@@ -292,11 +285,25 @@ impl Trans for Expr {
                 expr_while.cond.trans(out, is_async);
                 expr_while.body.trans(out, is_async);
             }
+            Expr::Await(expr_await) => {
+                assert_no_attr!(expr_await, self);
+                if is_async {
+                    let fut = &expr_await.base;
+                    expr_await.base = parse_quote_spanned! { expr_await.span() => unsafe { ::do_you_yield::not_sync::Await::<_, #out>::___make(#fut) } }
+                } else {
+                    *self = parse_quote_spanned! { expr_await.span() => ::core::compile_error!(#AWAIT_ERROR) }
+                }
+            }
             Expr::Yield(expr_yield) => {
                 let span = expr_yield.span();
                 let expr = &mut expr_yield.expr;
                 expr.trans(out, is_async);
-                *self = parse_quote_spanned! {span => unsafe { ::do_you_yield::sync::Yield::<#out>::___make(#expr) }.await };
+                let module: Ident = if is_async {
+                    parse_quote!(not_sync)
+                } else {
+                    parse_quote!(sync)
+                };
+                *self = parse_quote_spanned! {span => unsafe { ::do_you_yield::#module::Yield::<#out>::___make(#expr) }.await };
             }
             _ => todo!(),
         }
