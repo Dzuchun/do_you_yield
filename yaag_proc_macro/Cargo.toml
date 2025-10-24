@@ -1,5 +1,5 @@
 [package]
-name = "do_you_yield_macro"
+name = "yaag_proc_macro"
 version = "0.1.0"
 edition.workspace = true
 

@@ -1,5 +1,7 @@
 use core::pin::pin;
-use do_you_yield::{gn, gn_type};
+#[cfg(feature = "async")]
+use yaag::async_gn_type;
+use yaag::{gn, gn_type};
 
 fn from_fn<T, F: FnMut() -> Option<T>>(mut f: F) -> gn_type!(T) {
     gn!(move gen {
@@ -25,7 +27,7 @@ fn from_fn_works() {
 }
 
 #[cfg(feature = "async")]
-fn from_fn_async<T, F: FnMut() -> Option<T>>(mut f: F) -> do_you_yield::async_gn_type!(T) {
+fn from_fn_async<T, F: FnMut() -> Option<T>>(mut f: F) -> async_gn_type!(T) {
     use std::time::Duration;
 
     gn!(async move gen {

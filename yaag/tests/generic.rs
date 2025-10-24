@@ -1,5 +1,7 @@
 use core::pin::pin;
-use do_you_yield::{gn, gn_type};
+#[cfg(feature = "async")]
+use yaag::async_gn_type;
+use yaag::{gn, gn_type};
 
 fn once<T>(t: T) -> gn_type!(T) {
     gn!(gen { yield t; } -> T)
@@ -20,7 +22,7 @@ fn once_works_box() {
 }
 
 #[cfg(feature = "async")]
-fn once_async<T>(t: T) -> do_you_yield::async_gn_type!(T) {
+fn once_async<T>(t: T) -> async_gn_type!(T) {
     use std::time::Duration;
 
     gn!(async gen {

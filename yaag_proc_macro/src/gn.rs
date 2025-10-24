@@ -56,7 +56,7 @@ impl Input {
         parse_quote! {{
             #[allow(unused_unsafe)]
             let fut = async #mv #code;
-            ::do_you_yield::#module::Gn {
+            ::yaag::#module::Gn {
                 fut,
                 _ph: ::core::marker::PhantomData::<#out>,
             }

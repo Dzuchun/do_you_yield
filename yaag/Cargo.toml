@@ -1,5 +1,5 @@
 [package]
-name = "do_you_yield"
+name = "yaag"
 version = "0.1.0"
 edition.workspace = true
 
@@ -9,7 +9,7 @@ futures-util = "0.3.31"
 tokio = { version = "1.48", features = [ "full" ] }
 
 [dependencies]
-do_you_yield_macro.workspace = true
+yaag_proc_macro.workspace = true
 futures-core = { version = "0.3.31", optional = true }
 
 [features]

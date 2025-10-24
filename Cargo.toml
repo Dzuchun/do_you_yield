@@ -1,7 +1,7 @@
 [workspace]
 members = [
-    "do_you_yield",
-    "do_you_yield_macro",
+    "yaag",
+    "yaag_proc_macro",
 ]
 resolver = "3"
 
@@ -9,4 +9,4 @@ resolver = "3"
 edition = "2024"
 
 [workspace.dependencies]
-do_you_yield_macro = { path = "./do_you_yield_macro" }
+yaag_proc_macro = { path = "./yaag_proc_macro" }

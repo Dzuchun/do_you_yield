@@ -1,4 +1,4 @@
-use do_you_yield::gn;
+use yaag::gn;
 
 fn main() {
     gn! {

@@ -1,6 +1,6 @@
 use std::pin::pin;
 
-use do_you_yield::gn;
+use yaag::gn;
 
 #[test]
 fn empty() {
@@ -76,7 +76,7 @@ async fn generates_1_10_async() {
 #[test]
 fn captures_ref() {
     let mut i = 1;
-    let gn = do_you_yield::gn!(gen {
+    let gn = gn!(gen {
         while i <= 10 {
             yield i;
             i += 1;
@@ -98,7 +98,7 @@ async fn captures_ref_async() {
         tokio::time::sleep(Duration::from_millis(100)).await;
         val
     };
-    let gn = do_you_yield::gn!(async gen {
+    let gn = gn!(async gen {
         while i <= 10 {
             yield wait(i).await;
             i += 1;

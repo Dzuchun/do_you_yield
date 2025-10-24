@@ -289,7 +289,7 @@ impl Trans for Expr {
                 assert_no_attr!(expr_await, self);
                 if is_async {
                     let fut = &expr_await.base;
-                    expr_await.base = parse_quote_spanned! { expr_await.span() => unsafe { ::do_you_yield::not_sync::Await::<_, #out>::___make(#fut) } }
+                    expr_await.base = parse_quote_spanned! { expr_await.span() => unsafe { ::yaag::not_sync::Await::<_, #out>::___make(#fut) } }
                 } else {
                     *self = parse_quote_spanned! { expr_await.span() => ::core::compile_error!(#AWAIT_ERROR) }
                 }
@@ -303,7 +303,7 @@ impl Trans for Expr {
                 } else {
                     parse_quote!(sync)
                 };
-                *self = parse_quote_spanned! {span => unsafe { ::do_you_yield::#module::Yield::<#out>::___make(#expr) }.await };
+                *self = parse_quote_spanned! {span => unsafe { ::yaag::#module::Yield::<#out>::___make(#expr) }.await };
             }
             _ => todo!(),
         }

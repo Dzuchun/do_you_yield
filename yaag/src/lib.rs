@@ -1,6 +1,6 @@
 #![cfg_attr(not(test), no_std)]
 
-pub use do_you_yield_macro::gn;
+pub use yaag_proc_macro::gn;
 
 #[doc(hidden)]
 pub mod sync;
