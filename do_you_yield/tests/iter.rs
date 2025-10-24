@@ -23,3 +23,32 @@ fn from_fn_works() {
     let gn = pin!(gn);
     assert_eq!(gn.collect::<Vec<_>>(), (1..=10).collect::<Vec<_>>());
 }
+
+#[cfg(feature = "async")]
+fn from_fn_async<T, F: FnMut() -> Option<T>>(mut f: F) -> do_you_yield::async_gn_type!(T) {
+    use std::time::Duration;
+
+    gn!(async move gen {
+        while let Some(item) = f() {
+            tokio::time::sleep(Duration::from_millis(100)).await;
+            yield item;
+        }
+    } -> T)
+}
+
+#[cfg(feature = "async")]
+#[tokio::test]
+async fn from_fn_works_async() {
+    use futures_util::StreamExt;
+
+    let mut c = 0;
+    let gn = from_fn_async(|| {
+        if c < 10 {
+            c += 1;
+            Some(c)
+        } else {
+            None
+        }
+    });
+    assert_eq!(gn.collect::<Vec<_>>().await, (1..=10).collect::<Vec<_>>());
+}
