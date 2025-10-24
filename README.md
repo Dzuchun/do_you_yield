@@ -6,9 +6,8 @@
 You might've seen those in Python:
 ```python
 def gen():
-    for i in range(10) {
-        yield i;
-    }
+    for i in range(10):
+        yield i
 ```
 
 or in JS:
